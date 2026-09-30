@@ -246,6 +246,7 @@ def search_products(query: str, max_budget: float = None, category: str = None) 
         FUZZY_MATCH_THRESHOLD = 80  # Minimum similarity score for fuzzy matching
         def row_matches(row):
             combined = " ".join(str(row[col]).lower() for col in search_columns if col in row.index)
+            # TODO: multi-keyword queries should require all keywords to match
             #return any(kw in combined for kw in keywords)
             for kw in keywords:
                  # Fast path: exact substring match (handles most queries cheaply)
@@ -258,6 +259,7 @@ def search_products(query: str, max_budget: float = None, category: str = None) 
                     if fuzz.ratio(kw, word) >=  FUZZY_MATCH_THRESHOLD:
                         return True
             return False
+
 
 
         df = df[df.apply(row_matches, axis=1)]
